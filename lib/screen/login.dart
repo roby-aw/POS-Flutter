@@ -21,6 +21,7 @@ class _LoginState extends State<Login> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: TextButton(
               onPressed: () {},
@@ -30,95 +31,98 @@ class _LoginState extends State<Login> {
               )),
           backgroundColor: Colors.blue,
         ),
-        body: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Container(
-              height: 500,
-              width: 500,
-              child: Column(children: [
-                Image(
-                  image: AssetImage('images/chatnews.jpg'),
-                  width: 200,
-                  height: 200,
-                ),
-                SizedBox(
-                  width: 300,
-                  child: TextFormField(
-                    autofocus: true,
-                    controller: _email,
-                    onFieldSubmitted: (value) {
-                      if (_email.text.isEmpty) {
-                        _showEmptyDialog('Email');
-                      } else if (_password.text.isEmpty) {
-                        _showEmptyDialog('Password');
-                      } else if (_email.text.length < 8) {
-                        _showLenght8Dialog('Email');
-                      } else if (_password.text.length < 8) {
-                        _showLenght8Dialog('Password');
-                      } else {
-                        doLogin(_email.text, _password.text);
-                      }
-                    },
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      hintText: 'Masukkan Email',
-                      icon: Icon(Icons.email),
+        body: SingleChildScrollView(
+          child: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Container(
+                height: 500,
+                width: 500,
+                child: Column(children: [
+                  Image(
+                    image: Image.asset('assets/images/chatnews.jpg').image,
+                    width: 200,
+                    height: 200,
+                  ),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      autofocus: true,
+                      controller: _email,
+                      onFieldSubmitted: (value) {
+                        if (_email.text.isEmpty) {
+                          _showEmptyDialog('Email');
+                        } else if (_password.text.isEmpty) {
+                          _showEmptyDialog('Password');
+                        } else if (_email.text.length < 8) {
+                          _showLenght8Dialog('Email');
+                        } else if (_password.text.length < 8) {
+                          _showLenght8Dialog('Password');
+                        } else {
+                          doLogin(_email.text, _password.text);
+                        }
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email',
+                        hintText: 'Masukkan Email',
+                        icon: Icon(Icons.email),
+                      ),
                     ),
                   ),
-                ),
-                Padding(padding: EdgeInsets.only(top: 10)),
-                SizedBox(
-                  width: 300,
-                  child: TextFormField(
-                    onFieldSubmitted: (value) {
-                      if (_email.text.isEmpty) {
-                        _showEmptyDialog('Email');
-                      } else if (_password.text.isEmpty) {
-                        _showEmptyDialog('Password');
-                      } else if (_email.text.length < 8) {
-                        _showLenght8Dialog('Email');
-                      } else if (_password.text.length < 8) {
-                        _showLenght8Dialog('Password');
-                      } else {
-                        doLogin(_email.text, _password.text);
-                      }
-                    },
-                    controller: _password,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                      hintText: 'Masukkan Password',
-                      icon: Icon(Icons.lock),
+                  Padding(padding: EdgeInsets.only(top: 10)),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      onFieldSubmitted: (value) {
+                        if (_email.text.isEmpty) {
+                          _showEmptyDialog('Email');
+                        } else if (_password.text.isEmpty) {
+                          _showEmptyDialog('Password');
+                        } else if (_email.text.length < 8) {
+                          _showLenght8Dialog('Email');
+                        } else if (_password.text.length < 8) {
+                          _showLenght8Dialog('Password');
+                        } else {
+                          doLogin(_email.text, _password.text);
+                        }
+                      },
+                      controller: _password,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                        hintText: 'Masukkan Password',
+                        icon: Icon(Icons.lock),
+                      ),
                     ),
                   ),
-                ),
-                Padding(padding: EdgeInsets.only(top: 10)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(padding: EdgeInsets.only(right: 245)),
-                    ElevatedButton(
-                        style: ButtonStyle(alignment: Alignment.center),
-                        onPressed: () {
-                          if (_email.text.isEmpty) {
-                            _showEmptyDialog('Email');
-                          } else if (_password.text.isEmpty) {
-                            _showEmptyDialog('Password');
-                          } else if (_email.text.length < 8) {
-                            _showLenght8Dialog('Email');
-                          } else if (_password.text.length < 8) {
-                            _showLenght8Dialog('Password');
-                          } else {
-                            doLogin(_email.text, _password.text);
-                          }
-                        },
-                        child: Icon(Icons.login)),
-                  ],
-                ),
-              ]),
-            ),
-          ]),
+                  Padding(padding: EdgeInsets.only(top: 10)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(padding: EdgeInsets.only(right: 245)),
+                      ElevatedButton(
+                          style: ButtonStyle(alignment: Alignment.center),
+                          onPressed: () {
+                            if (_email.text.isEmpty) {
+                              _showEmptyDialog('Email');
+                            } else if (_password.text.isEmpty) {
+                              _showEmptyDialog('Password');
+                            } else if (_email.text.length < 8) {
+                              _showLenght8Dialog('Email');
+                            } else if (_password.text.length < 8) {
+                              _showLenght8Dialog('Password');
+                            } else {
+                              doLogin(_email.text, _password.text);
+                            }
+                          },
+                          child: Icon(Icons.login)),
+                    ],
+                  ),
+                ]),
+              ),
+            ]),
+          ),
         ),
       ),
     );

@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_complete_guide/screen/splashscreen.dart';
+import 'package:flutter_complete_guide/screen/cart.dart';
 import 'package:flutter_complete_guide/network/dashboard.dart';
 
 class Home extends StatefulWidget {
@@ -24,8 +25,12 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavDrawer(),
       appBar: AppBar(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.blueGrey,
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        backgroundColor: Colors.blue,
         title: Text('Home'),
         actions: [IconButton(onPressed: _LogOut, icon: Icon(Icons.logout))],
       ),
@@ -39,34 +44,35 @@ class _HomeState extends State<Home> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: () {
-                      bool isExist = false;
-                      cart.forEach((element) {
-                        if (element['id_item'] == snapshot.data?[index]['id']) {
-                          isExist = true;
-                        } else {
-                          isExist = false;
-                        }
-                      });
-
-                      if (isExist) {
-                        cart.forEach((element) {
-                          if (element['id_item'] ==
-                              snapshot.data?[index]['id']) {
-                            element['stock'] += 1;
-                          }
-                        });
-                      } else {
-                        cart.add({
-                          'id_item': snapshot.data?[index]['id'],
-                          'stock': 1,
-                        });
-                      }
-
                       if (snapshot.data?[index]['stock'] > 0) {
                         _incrementCounter();
                         setState(() {
                           snapshot.data?[index]['stock'] -= 1;
                         });
+                        bool isExist = false;
+                        cart.forEach((element) {
+                          if (element['id_item'] ==
+                              snapshot.data?[index]['id']) {
+                            isExist = true;
+                          }
+                        });
+
+                        if (isExist) {
+                          cart.forEach((element) {
+                            if (element['id_item'] ==
+                                snapshot.data?[index]['id']) {
+                              element['stock'] += 1;
+                            }
+                          });
+                        } else {
+                          cart.add({
+                            'id_item': snapshot.data?[index]['id'],
+                            'stock': 1,
+                            'price_sell': snapshot.data?[index]['price_sell'],
+                            'name': snapshot.data?[index]['name'],
+                            'image': snapshot.data?[index]['image']
+                          });
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
@@ -107,8 +113,9 @@ class _HomeState extends State<Home> {
       )),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _incrementCounter();
             print(cart);
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Cart(cart)));
           },
           tooltip: 'Increment',
           child: Container(
@@ -145,54 +152,5 @@ class _HomeState extends State<Home> {
     setState(() {
       _counter++;
     });
-  }
-}
-
-class NavDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Colors.blueAccent,
-      child: ListView(
-        children: <Widget>[
-          DrawerHeader(
-            child: Text(
-              'Side menu',
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
-            decoration: BoxDecoration(
-                color: Colors.green,
-                image: DecorationImage(
-                    fit: BoxFit.fitHeight,
-                    image: AssetImage('assets/images/chatnews.jpg'))),
-          ),
-          ListTile(
-            leading: Icon(Icons.input),
-            title: Text('Welcome'),
-            onTap: () => {},
-          ),
-          ListTile(
-            leading: Icon(Icons.verified_user),
-            title: Text('Profile'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
-          ListTile(
-            leading: Icon(Icons.border_color),
-            title: Text('Feedback'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
-          ListTile(
-            leading: Icon(Icons.exit_to_app),
-            title: Text('Logout'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
-        ],
-      ),
-    );
   }
 }
