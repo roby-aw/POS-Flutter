@@ -207,12 +207,12 @@ class _LoginState extends State<Login> {
       await prefs.setString('email', result['result']['email']);
       await prefs.setBool('is_login', true);
 
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
           builder: (BuildContext context) => Home(),
         ),
-        // (route) => false,
+        (route) => false,
       );
     } else {
       _showMessageDialog(_message);
