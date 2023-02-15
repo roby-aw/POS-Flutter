@@ -1,4 +1,4 @@
-# flutter_complete_guide
+# Point Of Sale
 
 A new Flutter project.
 
