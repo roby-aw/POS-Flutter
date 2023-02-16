@@ -6,7 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_complete_guide/screen/login.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<List<dynamic>> fecthDataUsers(BuildContext context) async {
+class Result {
+  String message;
+  List<dynamic> result;
+
+  Result({required this.message, required this.result});
+}
+
+Future<Result> fecthDataUsers(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('token') ?? '';
   var result = await http.get(
@@ -17,14 +24,16 @@ Future<List<dynamic>> fecthDataUsers(BuildContext context) async {
         'Authorization': 'Bearer $token',
       });
   if (result.statusCode == 200) {
-    return json.decode(result.body)['result'];
+    return Result(
+        message: json.decode(result.body)['message'],
+        result: json.decode(result.body)['result']);
   } else {
     prefs.setString('token', '');
     prefs.setBool('is_login', false);
 
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Login()));
-    return [];
+    return Result(message: '', result: []);
   }
 }
 

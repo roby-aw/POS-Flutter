@@ -16,7 +16,7 @@ class _HomeState extends State<Home> {
   final List<Map<String, dynamic>> cart = [];
   int _counter = 0;
   int _selectedIndex = 0;
-  Future<List<dynamic>>? data;
+  late Future<Result> data;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -45,12 +45,12 @@ class _HomeState extends State<Home> {
       body: RefreshIndicator(
           onRefresh: () => fecthDataUsers(context),
           child: Center(
-              child: FutureBuilder<List<dynamic>>(
+              child: FutureBuilder<Result>(
             future: data,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
-                    itemCount: snapshot.data?.length,
+                    itemCount: snapshot.data?.result.length,
                     itemBuilder: (context, index) {
                       return Card(
                           color: Colors.blue[100],
@@ -59,15 +59,15 @@ class _HomeState extends State<Home> {
                               borderRadius: BorderRadius.circular(10)),
                           child: ListTile(
                             onTap: () {
-                              if (snapshot.data?[index]['stock'] > 0) {
+                              if (snapshot.data?.result[index]['stock'] > 0) {
                                 _incrementCounter();
                                 setState(() {
-                                  snapshot.data?[index]['stock'] -= 1;
+                                  snapshot.data?.result[index]['stock'] -= 1;
                                 });
                                 bool isExist = false;
                                 cart.forEach((element) {
                                   if (element['id_item'] ==
-                                      snapshot.data?[index]['id']) {
+                                      snapshot.data?.result[index]['id']) {
                                     isExist = true;
                                   }
                                 });
@@ -75,18 +75,21 @@ class _HomeState extends State<Home> {
                                 if (isExist) {
                                   cart.forEach((element) {
                                     if (element['id_item'] ==
-                                        snapshot.data?[index]['id']) {
+                                        snapshot.data?.result[index]['id']) {
                                       element['stock'] += 1;
                                     }
                                   });
                                 } else {
                                   cart.add({
-                                    'id_item': snapshot.data?[index]['id'],
+                                    'id_item': snapshot.data?.result[index]
+                                        ['id'],
                                     'stock': 1,
-                                    'price_sell': snapshot.data?[index]
+                                    'price_sell': snapshot.data?.result[index]
                                         ['price_sell'],
-                                    'name': snapshot.data?[index]['name'],
-                                    'image': snapshot.data?[index]['image']
+                                    'name': snapshot.data?.result[index]
+                                        ['name'],
+                                    'image': snapshot.data?.result[index]
+                                        ['image']
                                   });
                                 }
                               } else {
@@ -112,14 +115,16 @@ class _HomeState extends State<Home> {
                                         children: [
                                           Text(
                                             'Rp. ' +
-                                                snapshot.data![index]
-                                                        ['price_sell']
+                                                snapshot.data!
+                                                    .result[index]['price_sell']
                                                     .toString(),
                                           ),
-                                          if (snapshot.data![index]['stock'] <
+                                          if (snapshot.data!.result[index]
+                                                  ['stock'] <
                                               10)
                                             Text(
-                                              snapshot.data![index]['stock']
+                                              snapshot.data!
+                                                      .result[index]['stock']
                                                       .toString() +
                                                   " Stock",
                                               style:
@@ -127,17 +132,18 @@ class _HomeState extends State<Home> {
                                             )
                                           else
                                             Text(
-                                              snapshot.data![index]['stock']
+                                              snapshot.data!
+                                                      .result[index]['stock']
                                                       .toString() +
                                                   " Stock",
                                               style: TextStyle(
                                                   color: Colors.green),
                                             )
                                         ]))),
-                            title: Text(snapshot.data?[index]['name']),
+                            title: Text(snapshot.data?.result[index]['name']),
                             leading: CircleAvatar(
                                 child: Image.memory(base64Decode(snapshot
-                                    .data?[index]['image']
+                                    .data?.result[index]['image']
                                     .split(',')[1]))),
                           ));
                     });
