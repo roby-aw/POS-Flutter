@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,8 +32,9 @@ class _LoginState extends State<Login> {
               )),
           backgroundColor: Colors.blue,
         ),
-        body: SingleChildScrollView(
-          child: Center(
+        body: Center(
+          child: SingleChildScrollView(
+            reverse: true,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Container(
@@ -40,14 +42,14 @@ class _LoginState extends State<Login> {
                 width: 500,
                 child: Column(children: [
                   Image(
-                    image: Image.asset('assets/images/chatnews.jpg').image,
+                    image: Image.asset('assets/images/image_pos.jpg').image,
                     width: 200,
                     height: 200,
                   ),
                   SizedBox(
                     width: 300,
                     child: TextFormField(
-                      autofocus: true,
+                      // autofocus: true,
                       controller: _email,
                       onFieldSubmitted: (value) {
                         if (_email.text.isEmpty) {
@@ -74,6 +76,7 @@ class _LoginState extends State<Login> {
                   SizedBox(
                     width: 300,
                     child: TextFormField(
+                      obscureText: true,
                       onFieldSubmitted: (value) {
                         if (_email.text.isEmpty) {
                           _showEmptyDialog('Email');

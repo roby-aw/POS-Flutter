@@ -101,7 +101,7 @@ class _HomeState extends State<Home> {
                               }
                             },
                             trailing: Container(
-                                padding: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.only(top: 10, bottom: 10),
                                 width: 100,
                                 height: 100,
                                 child: Align(
@@ -148,7 +148,6 @@ class _HomeState extends State<Home> {
           ))),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print(cart);
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Cart(cart)));
           },
