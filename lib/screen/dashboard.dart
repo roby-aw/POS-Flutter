@@ -148,6 +148,7 @@ class _HomeState extends State<Home> {
           ))),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
+            print(cart);
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Cart(cart)));
           },

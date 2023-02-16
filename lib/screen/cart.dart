@@ -17,10 +17,10 @@ class _CardState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     num total = 0;
-
     for (var i = 0; i < widget.cart.length; i++) {
       total += widget.cart[i]['price_sell'] * widget.cart[i]['stock'];
     }
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Cart'),
