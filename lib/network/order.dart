@@ -6,28 +6,35 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_complete_guide/screen/login.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class OrderNetwork {
-  final Map<String, dynamic> result;
-  final String? message;
+class RequestOrder {
+  int totalItem;
+  int totalPPN;
+  int PPN;
+  int totalHarga;
+  int totalHargaPPN;
+  List<Map> orderItem;
 
-  const OrderNetwork({
-    required this.result,
-    required this.message,
-  });
-
-  factory OrderNetwork.fromJson(Map<String, dynamic> json) {
-    return OrderNetwork(
-      result: json['result'],
-      message: json['message'],
-    );
-  }
+  RequestOrder(
+      {required this.totalItem,
+      required this.totalPPN,
+      required this.PPN,
+      required this.totalHarga,
+      required this.totalHargaPPN,
+      required this.orderItem});
 }
 
-Future<List<dynamic>> sendOrder(
-    BuildContext context, Map<String, dynamic> data) async {
+void sendOrder(RequestOrder, context) async {
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('token') ?? '';
-
+  var data = {
+    'total_item': RequestOrder.totalItem,
+    'price_ppn': RequestOrder.totalPPN,
+    'total_price_ppn': RequestOrder.totalHargaPPN,
+    'ppn': RequestOrder.PPN,
+    'total_price': RequestOrder.totalHarga,
+    'order': RequestOrder.orderItem,
+  };
+  print(data);
   var result = await http.post(
       Uri.parse(dotenv.env['BASE_URL'].toString() + '/pos/orderitem'),
       headers: {
@@ -35,15 +42,17 @@ Future<List<dynamic>> sendOrder(
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: data);
+      body: json.encode(data));
+  print(result.statusCode);
+  print(result.body);
   if (result.statusCode == 200) {
     // print(json.decode(result.body)['result']);
     return json.decode(result.body)['result'];
-  } else {
-    prefs.setString('token', '');
-    prefs.setBool('is_login', false);
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => Login()));
-    return [];
   }
+  // } else {
+  //   prefs.setString('token', '');
+  //   prefs.setBool('is_login', false);
+  //   Navigator.pushReplacement(
+  //       context, MaterialPageRoute(builder: (context) => Login()));
+  // }
 }

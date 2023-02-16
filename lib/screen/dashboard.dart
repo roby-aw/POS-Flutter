@@ -17,6 +17,7 @@ class _HomeState extends State<Home> {
   int _counter = 0;
   int _selectedIndex = 0;
   late Future<Result> data;
+  int PPN = 0;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -48,6 +49,7 @@ class _HomeState extends State<Home> {
               child: FutureBuilder<Result>(
             future: data,
             builder: (context, snapshot) {
+              PPN = snapshot.data?.ppn ?? 0;
               if (snapshot.hasData) {
                 return ListView.builder(
                     itemCount: snapshot.data?.result.length,
@@ -142,9 +144,11 @@ class _HomeState extends State<Home> {
                                         ]))),
                             title: Text(snapshot.data?.result[index]['name']),
                             leading: CircleAvatar(
-                                child: Image.memory(base64Decode(snapshot
-                                    .data?.result[index]['image']
-                                    .split(',')[1]))),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Image.memory(base64Decode(snapshot
+                                        .data?.result[index]['image']
+                                        .split(',')[1])))),
                           ));
                     });
               } else {
@@ -155,8 +159,8 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             print(cart);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Cart(cart)));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => Cart(cart, PPN)));
           },
           tooltip: 'Increment',
           child: Container(

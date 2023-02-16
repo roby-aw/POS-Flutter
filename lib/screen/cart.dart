@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_complete_guide/screen/dashboard.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_complete_guide/screen/splashscreen.dart';
 import 'package:flutter_complete_guide/network/dashboard.dart';
+import 'package:flutter_complete_guide/network/order.dart';
 
 class Cart extends StatefulWidget {
   late List<Map<String, dynamic>> cart;
-  Cart(this.cart);
+  int ppn;
+  Cart(this.cart, this.ppn);
 
   @override
   _CardState createState() => _CardState();
@@ -16,10 +19,20 @@ class Cart extends StatefulWidget {
 class _CardState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
-    num total = 0;
+    int total_item = 0;
+    int total = 0;
+    List<Map<dynamic, dynamic>> items = [];
+    print(widget.cart);
     for (var i = 0; i < widget.cart.length; i++) {
-      total += widget.cart[i]['price_sell'] * widget.cart[i]['stock'];
+      total_item += widget.cart[i]['stock'] as int;
+      var item = {
+        'productid': widget.cart[i]['id_item'],
+        'qty': widget.cart[i]['stock'],
+      };
+      items.add(item);
+      total += widget.cart[i]['price_sell'] * widget.cart[i]['stock'] as int;
     }
+    final total_ppn = total + (total * widget.ppn / 100);
 
     return Scaffold(
         appBar: AppBar(
@@ -53,8 +66,29 @@ class _CardState extends State<Cart> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.only(left: 10),
-                child: Text('Total : ' + 'Rp. ' + total.toString()),
+                  padding: EdgeInsets.only(left: 10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Total : ' + 'Rp. ' + total.toString(),
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(right: 30),
+                        child: Text(
+                          'PPN : ' + widget.ppn.toString() + '%',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  )),
+              Container(
+                padding: EdgeInsets.only(right: 10),
+                child: Text(
+                  'Total + PPN : ' + 'Rp. ' + total_ppn.toString(),
+                  style: TextStyle(color: Colors.blue),
+                ),
               ),
               Container(
                 padding: EdgeInsets.only(right: 10),
@@ -62,7 +96,49 @@ class _CardState extends State<Cart> {
                   style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.blue)),
-                  onPressed: () {},
+                  onPressed: () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('Order item'),
+                      content: const Text('Are you sure?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            var reqData = RequestOrder(
+                                totalHarga: total,
+                                orderItem: items,
+                                totalItem: total_item,
+                                totalHargaPPN: total,
+                                PPN: widget.ppn,
+                                totalPPN: (total - total_ppn).round());
+
+                            sendOrder(reqData, context);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => Home()),
+                              (route) => false,
+                            );
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // onPressed: () {
+                  //   var reqData = RequestOrder(
+                  //       totalHarga: total,
+                  //       orderItem: items,
+                  //       totalItem: total_item,
+                  //       totalHargaPPN: total,
+                  //       PPN: widget.ppn,
+                  //       totalPPN: (total - total_ppn).round());
+
+                  //   sendOrder(reqData, context);
+                  // },
                   child: Text(
                     'Order',
                     style: TextStyle(color: Colors.white),

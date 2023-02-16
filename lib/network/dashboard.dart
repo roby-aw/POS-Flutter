@@ -9,8 +9,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class Result {
   String message;
   List<dynamic> result;
+  int ppn;
 
-  Result({required this.message, required this.result});
+  Result({required this.message, required this.result, required this.ppn});
 }
 
 Future<Result> fecthDataUsers(BuildContext context) async {
@@ -25,6 +26,7 @@ Future<Result> fecthDataUsers(BuildContext context) async {
       });
   if (result.statusCode == 200) {
     return Result(
+        ppn: json.decode(result.body)['ppn'],
         message: json.decode(result.body)['message'],
         result: json.decode(result.body)['result']);
   } else {
@@ -33,7 +35,7 @@ Future<Result> fecthDataUsers(BuildContext context) async {
 
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => Login()));
-    return Result(message: '', result: []);
+    return Result(message: '', result: [], ppn: 0);
   }
 }
 
