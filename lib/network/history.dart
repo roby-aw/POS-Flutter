@@ -12,7 +12,7 @@ Future<List<dynamic>> fecthDataHistory(
   final times = (date.toLocal().millisecondsSinceEpoch / 1000).ceil();
   final prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('token') ?? '';
-  print(times);
+  // print(times);
   var result = await http.get(
       Uri.parse(dotenv.env['BASE_URL'].toString() +
           '/pos/order/history?month=' +
@@ -23,6 +23,7 @@ Future<List<dynamic>> fecthDataHistory(
         'Authorization': 'Bearer $token',
       });
   if (result.statusCode == 200) {
+    // print(json.decode(result.body)['result']);
     return json.decode(result.body)['result'];
   } else {
     prefs.setString('token', '');

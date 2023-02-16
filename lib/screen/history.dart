@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_complete_guide/screen/splashscreen.dart';
 import 'package:flutter_complete_guide/screen/cart.dart';
 import 'package:flutter_complete_guide/screen/dashboard.dart';
+import 'package:flutter_complete_guide/screen/detail_history.dart';
 import 'package:flutter_complete_guide/network/history.dart';
 import 'package:intl/intl.dart';
 import 'package:month_year_picker/month_year_picker.dart';
@@ -61,6 +62,20 @@ class _HistoryState extends State<History> {
                 itemBuilder: (context, index) {
                   return Card(
                       child: ListTile(
+                    onTap: () {
+                      print(snapshot.data?[index]['item']);
+                      final list = List<Map<String, dynamic>>.from(
+                          snapshot.data?[index]['item']);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Detail_History(
+                                    PPN: snapshot.data?[index]['ppn'],
+                                    item: list,
+                                    HistoryDate: snapshot.data?[index]
+                                        ['order_time'],
+                                  )));
+                    },
                     trailing: Text(
                         snapshot.data![index]['total_item'].toString() +
                             ' item'),
@@ -68,88 +83,6 @@ class _HistoryState extends State<History> {
                     subtitle: Text(DateFormat.yMd().add_jm().format(
                         DateTime.parse(snapshot.data?[index]['created_at']))),
                   ));
-                  // return Column(
-                  //   mainAxisAlignment: MainAxisAlignment.start,
-                  //   children: <Widget>[
-                  //     ListView.builder(
-                  //       physics: ClampingScrollPhysics(),
-                  //       shrinkWrap: true,
-                  //       itemCount: snapshot.data?[index]['item'].length,
-                  //       itemBuilder: (BuildContext context, indexs) =>
-                  //           Container(
-                  //         child: Text(
-                  //             snapshot.data?[index]['item'][indexs]['name']),
-                  //       ),
-                  //     )
-                  //   ],
-                  // );
-                  //   print(snapshot.data);
-                  //   return ListTile(
-                  //     title: Text(snapshot.data?[index]['transactionid']),
-                  //     onTap: () {
-                  //       print(snapshot.data);
-                  //       print(snapshot.data?[index]['transactionid']);
-                  //       // if (snapshot.data?[index]['stock'] > 0) {
-                  //       //   _incrementCounter();
-                  //       //   setState(() {
-                  //       //     snapshot.data?[index]['stock'] -= 1;
-                  //       //   });
-                  //       //   bool isExist = false;
-                  //       //   cart.forEach((element) {
-                  //       //     if (element['id_item'] ==
-                  //       //         snapshot.data?[index]['id']) {
-                  //       //       isExist = true;
-                  //       //     }
-                  //       //   });
-
-                  //       //   if (isExist) {
-                  //       //     cart.forEach((element) {
-                  //       //       if (element['id_item'] ==
-                  //       //           snapshot.data?[index]['id']) {
-                  //       //         element['stock'] += 1;
-                  //       //       }
-                  //       //     });
-                  //       //   } else {
-                  //       //     cart.add({
-                  //       //       'id_item': snapshot.data?[index]['id'],
-                  //       //       'stock': 1,
-                  //       //       'price_sell': snapshot.data?[index]['price_sell'],
-                  //       //       'name': snapshot.data?[index]['name'],
-                  //       //       'image': snapshot.data?[index]['image']
-                  //       //     });
-                  //       //   }
-                  //       // } else {
-                  //       //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  //       //     content: Text(
-                  //       //       'Stock Habis',
-                  //       //       style: TextStyle(color: Colors.red),
-                  //       //     ),
-                  //       //     duration: Duration(seconds: 2),
-                  //       //   ));
-                  //       // }
-                  //     },
-                  //     trailing: Container(
-                  //         padding: EdgeInsets.only(top: 10),
-                  //         width: 50,
-                  //         child: Column(children: [
-                  //           // Text(snapshot.data?[index]['price_sell'].toString() ??
-                  //           //     ""),
-                  //           // if (snapshot.data?[index]['stock'] < 10)
-                  //           //   Text(
-                  //           //     snapshot.data?[index]['stock'].toString() ?? "",
-                  //           //     style: TextStyle(color: Colors.red),
-                  //           //   )
-                  //           // else
-                  //           //   Text(
-                  //           //     snapshot.data?[index]['stock'].toString() ?? "",
-                  //           //     style: TextStyle(color: Colors.green),
-                  //           //   )
-                  //         ])),
-                  //     // title: Text(snapshot.data?[index]['name']),
-                  //     // leading: CircleAvatar(
-                  //     //     child: Image.memory(base64Decode(
-                  //     //         snapshot.data?[index]['image'].split(',')[1]))),
-                  //   );
                 });
           } else {
             return Center(child: Text('No selected month for history'));
